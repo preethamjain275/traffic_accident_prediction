@@ -179,7 +179,7 @@ The dataset contains **10,000 realistic accident records** with the following fe
 ## 🌲 Algorithm — Random Forest
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/74038190/212748842-9fcbad5b-6173-4175-8a61-521f3dbb7514.gif" width="500"/>
+<img src="https://user-images.githubusercontent.com/74038190/212257472-08e52665-c503-4bd9-aa20-f5a4dae769b5.gif" width="500"/>
 </div>
 
 > **Simple Analogy:** Imagine asking 200 experts the same question. Each gives their answer. The majority vote becomes the final prediction. That's Random Forest.
