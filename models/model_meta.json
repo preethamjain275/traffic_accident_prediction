@@ -1,0 +1,120 @@
+{
+  "accuracy": 0.6235,
+  "cv_mean": 0.6181,
+  "cv_std": 0.0038,
+  "features": [
+    "Temperature_F",
+    "Wind_Speed_mph",
+    "Visibility_mi",
+    "Precipitation_in",
+    "Humidity_pct",
+    "Pressure_in",
+    "Speed_Limit",
+    "Weather_Encoded",
+    "Road_Encoded",
+    "Hour",
+    "Day_Encoded",
+    "Month",
+    "State_Encoded",
+    "Junction",
+    "Traffic_Signal",
+    "Crossing",
+    "Stop",
+    "Amenity",
+    "Is_Rush_Hour",
+    "Is_Night",
+    "Is_Weekend",
+    "Bad_Weather"
+  ],
+  "weather_classes": [
+    "Clear",
+    "Cloudy",
+    "Fog",
+    "Hail",
+    "Heavy Rain",
+    "Rain",
+    "Snow",
+    "Thunderstorm",
+    "Windy"
+  ],
+  "road_classes": [
+    "City Street",
+    "Highway",
+    "Interstate",
+    "Rural Road",
+    "State Road"
+  ],
+  "day_classes": [
+    "Friday",
+    "Monday",
+    "Saturday",
+    "Sunday",
+    "Thursday",
+    "Tuesday",
+    "Wednesday"
+  ],
+  "state_classes": [
+    "CA",
+    "FL",
+    "GA",
+    "IL",
+    "MI",
+    "NC",
+    "NY",
+    "OH",
+    "PA",
+    "TX"
+  ],
+  "feature_importances": {
+    "Speed_Limit": 0.14319,
+    "Bad_Weather": 0.13194,
+    "Visibility_mi": 0.11039,
+    "Wind_Speed_mph": 0.07769,
+    "Weather_Encoded": 0.07344,
+    "Temperature_F": 0.06991,
+    "Humidity_pct": 0.05826,
+    "Hour": 0.05823,
+    "Pressure_in": 0.05642,
+    "Month": 0.03797,
+    "State_Encoded": 0.03563,
+    "Day_Encoded": 0.0297,
+    "Road_Encoded": 0.02433,
+    "Precipitation_in": 0.02154,
+    "Is_Night": 0.01191,
+    "Traffic_Signal": 0.01043,
+    "Junction": 0.00904,
+    "Stop": 0.00869,
+    "Crossing": 0.00837,
+    "Is_Rush_Hour": 0.00795,
+    "Amenity": 0.00794,
+    "Is_Weekend": 0.00703
+  },
+  "confusion_matrix": [
+    [
+      632,
+      140,
+      27,
+      1
+    ],
+    [
+      157,
+      236,
+      99,
+      8
+    ],
+    [
+      30,
+      120,
+      164,
+      86
+    ],
+    [
+      2,
+      17,
+      66,
+      215
+    ]
+  ],
+  "train_size": 8000,
+  "test_size": 2000
+}

@@ -1,0 +1,83 @@
+import pandas as pd
+import numpy as np
+import os
+
+np.random.seed(42)
+N = 10000
+
+weather_options = ['Clear', 'Cloudy', 'Rain', 'Heavy Rain', 'Snow', 'Fog', 'Thunderstorm', 'Hail', 'Windy']
+weather_weights = [0.35, 0.25, 0.15, 0.05, 0.07, 0.06, 0.04, 0.01, 0.02]
+road_types      = ['Highway', 'State Road', 'City Street', 'Rural Road', 'Interstate']
+road_weights    = [0.30, 0.20, 0.30, 0.10, 0.10]
+states          = ['CA', 'FL', 'TX', 'NY', 'PA', 'OH', 'NC', 'GA', 'MI', 'IL']
+
+hours = np.random.choice(range(24), N, p=[
+    0.02,0.01,0.01,0.01,0.02,0.03,
+    0.05,0.07,0.06,0.05,0.05,0.05,
+    0.05,0.05,0.05,0.05,0.06,0.07,
+    0.06,0.05,0.04,0.04,0.03,0.02
+])
+
+weather      = np.random.choice(weather_options, N, p=weather_weights)
+road_type    = np.random.choice(road_types, N, p=road_weights)
+temperature  = np.clip(np.random.normal(60, 20, N), 5, 105)
+wind_speed   = np.clip(np.random.exponential(8, N), 0, 60)
+visibility   = np.clip(np.random.normal(8, 3, N), 0.1, 10)
+humidity     = np.clip(np.random.normal(60, 20, N), 10, 100)
+pressure     = np.clip(np.random.normal(29.9, 0.5, N), 27, 32)
+precipitation = np.where(
+    np.isin(weather, ['Rain', 'Heavy Rain', 'Thunderstorm', 'Hail']),
+    np.clip(np.random.exponential(0.3, N), 0, 3.0), 0.0
+)
+speed_limit  = np.random.choice([25,35,45,55,65,70,75], N, p=[0.1,0.15,0.2,0.2,0.2,0.1,0.05])
+junction     = np.random.choice([0,1], N, p=[0.7,0.3])
+traffic_signal = np.random.choice([0,1], N, p=[0.6,0.4])
+crossing     = np.random.choice([0,1], N, p=[0.75,0.25])
+stop         = np.random.choice([0,1], N, p=[0.75,0.25])
+amenity      = np.random.choice([0,1], N, p=[0.8,0.2])
+day_of_week  = np.random.choice(
+    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+    N, p=[0.16,0.15,0.15,0.15,0.17,0.12,0.10]
+)
+month  = np.random.choice(range(1,13), N)
+state  = np.random.choice(states, N)
+
+severity_score = (
+    (speed_limit / 75) * 2.5 +
+    (wind_speed / 60) * 1.5 +
+    ((10 - visibility) / 10) * 1.5 +
+    np.isin(weather, ['Heavy Rain','Snow','Fog','Thunderstorm','Hail']).astype(float) * 1.5 +
+    ((temperature < 32) | (temperature > 95)).astype(float) * 0.5 +
+    (hours < 6).astype(float) * 0.8 +
+    np.random.normal(0, 0.5, N)
+)
+
+severity_bins = np.percentile(severity_score, [40, 65, 85])
+severity      = np.clip(np.digitize(severity_score, bins=severity_bins) + 1, 1, 4)
+
+df = pd.DataFrame({
+    'Severity':         severity,
+    'Temperature_F':    np.round(temperature, 1),
+    'Wind_Speed_mph':   np.round(wind_speed, 1),
+    'Visibility_mi':    np.round(visibility, 1),
+    'Precipitation_in': np.round(precipitation, 2),
+    'Humidity_pct':     np.round(humidity, 1),
+    'Pressure_in':      np.round(pressure, 2),
+    'Speed_Limit':      speed_limit,
+    'Weather_Condition':weather,
+    'Road_Type':        road_type,
+    'Hour':             hours,
+    'Day_of_Week':      day_of_week,
+    'Month':            month,
+    'State':            state,
+    'Junction':         junction,
+    'Traffic_Signal':   traffic_signal,
+    'Crossing':         crossing,
+    'Stop':             stop,
+    'Amenity':          amenity,
+})
+
+os.makedirs('data', exist_ok=True)
+df.to_csv('data/accidents_cleaned.csv', index=False)
+print("Dataset created: data/accidents_cleaned.csv")
+print(df['Severity'].value_counts().sort_index())
