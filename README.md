@@ -5,7 +5,7 @@
 
 <!-- Typing Animation -->
 <a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=F97316&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=80&lines=🚨+Predicting+Road+Accident+Severity;🌲+Powered+by+Random+Forest+Algorithm;📊+Real-Time+Interactive+Dashboard" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=22&pause=1000&color=F97316&center=true&vCenter=true&width=700&height=80&lines=Predicting+Road+Accident+Severity;Powered+by+Random+Forest+Algorithm;Real-Time+Interactive+Dashboard;22+Feature+Weather+%26+Road+Analysis" alt="Typing SVG" />
 </a>
 
 <br/>
@@ -290,13 +290,49 @@ Temperature      ████████░░░░░░░░░░░░   
 
 ---
 
-## 👩‍💻 Author
+## 👨‍💻 Author
 
 <div align="center">
 
-**Built with Python, Streamlit & Machine Learning**
-
 <img src="https://user-images.githubusercontent.com/74038190/212284115-f47cd8ff-2ffb-4b04-b5bf-4d1c14c0247f.gif" width="400"/>
+
+### **Preetham Jain M**
+
+![Author](https://img.shields.io/badge/Author-Preetham%20Jain%20M-f97316?style=for-the-badge&logo=github&logoColor=white)
+
+</div>
+
+---
+
+## 📜 License
+
+<div align="center">
+
+```
+MIT License
+
+Copyright (c) 2026 Preetham Jain M
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+![License](https://img.shields.io/badge/License-MIT-f97316?style=for-the-badge)
 
 </div>
 
