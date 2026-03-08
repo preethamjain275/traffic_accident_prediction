@@ -35,7 +35,7 @@
 
 ## 🎬 Live Preview
 
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="700"/>
+<img src="https://user-images.githubusercontent.com/74038190/212749447-bfb7e725-6987-49d9-ae85-2015e3e7cc41.gif" width="700"/>
 
 </div>
 
@@ -59,7 +59,7 @@
 
 ## 🚀 About The Project
 
-<img align="right" width="380" src="https://user-images.githubusercontent.com/74038190/229223263-cf2e4b07-2615-4f87-9c38-e37600f8381a.gif"/>
+<img align="right" width="380" src="https://user-images.githubusercontent.com/74038190/212749695-a6817c5a-a794-462b-afca-1b5ce7dd5e63.gif"/>
 
 **TrafficGuard AI** is a Traffic Accident Prediction System that uses **Machine Learning** to predict the severity of road accidents in real time.
 
@@ -81,7 +81,7 @@ The project features a fully interactive **Streamlit web dashboard** with dark c
 ## ✨ Key Features
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/74038190/212284158-e840e285-664b-44d7-b79b-e264b5e54825.gif" width="400"/>
+<img src="https://user-images.githubusercontent.com/74038190/212749171-b84692a8-2b04-4e3b-93ca-ac14705da224.gif" width="400"/>
 </div>
 
 ```
@@ -179,7 +179,7 @@ The dataset contains **10,000 realistic accident records** with the following fe
 ## 🌲 Algorithm — Random Forest
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/74038190/212748842-9fcbad5b-6173-4175-8a61-521f3dbb7514.gif" width="500"/>
+<img src="https://user-images.githubusercontent.com/74038190/238200428-67f477ed-6624-42da-99f0-1a7b1a16eecb.gif" width="500"/>
 </div>
 
 > **Simple Analogy:** Imagine asking 200 experts the same question. Each gives their answer. The majority vote becomes the final prediction. That's Random Forest.
@@ -294,7 +294,7 @@ Temperature      ████████░░░░░░░░░░░░   
 
 <div align="center">
 
-<img src="https://user-images.githubusercontent.com/74038190/212284115-f47cd8ff-2ffb-4b04-b5bf-4d1c14c0247f.gif" width="400"/>
+<img src="https://user-images.githubusercontent.com/74038190/212749168-86d6c7ab-98da-409b-998f-c5b74721badd.gif" width="400"/>
 
 ### **Preetham Jain M**
 
