@@ -72,7 +72,8 @@ def preprocess_data(df, scaler_type="None"):
 def generate_insights(df_summary, api_key):
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Using gemini-pro which has stable availability
+        model = genai.GenerativeModel('gemini-pro')
         prompt = f"Analyze the following dataset summary and provide insights on patterns, anomalies, and data cleaning suggestions. Keep it concise, professional, and well-structured.\n\nDataset Summary:\n{df_summary}"
         response = model.generate_content(prompt)
         return response.text
