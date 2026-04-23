@@ -61,7 +61,9 @@
 
 <img align="right" width="380" src="https://user-images.githubusercontent.com/74038190/229223263-cf2e4b07-2615-4f87-9c38-e37600f8381a.gif"/>
 
-**TrafficGuard AI** is a Traffic Accident Prediction System that uses **Machine Learning** to predict the severity of road accidents in real time.
+**TrafficGuard AI** is an advanced, end-to-end Traffic Accident Analytics and Prediction System that uses **Machine Learning** to predict the severity of road accidents in real time. 
+
+Evolving beyond a simple prediction model, the system now features a fully comprehensive **Data Cleaning Lab** and is augmented with **Google's Gemini AI** to provide deep, automated insights into raw dataset summaries.
 
 By analyzing **22 input features** — including weather conditions, road type, speed limits, and time of day — the system classifies accident severity into 4 levels:
 
@@ -84,18 +86,28 @@ The project features a fully interactive **Streamlit web dashboard** with dark c
 <img src="https://user-images.githubusercontent.com/74038190/212284158-e840e285-664b-44d7-b79b-e264b5e54825.gif" width="400"/>
 </div>
 
+<div align="center">
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Exo+2&weight=600&size=20&pause=1000&color=22C55E&center=true&vCenter=true&width=500&height=40&lines=Now+with+Integrated+Data+Cleaning+Lab;Gemini+AI+Powered+Dataset+Insights" alt="Typing SVG" />
+</a>
+</div>
+
 ```
+🧪  Data Cleaning Lab (Handle missing values, scale features, remove outliers)
+🧠  Gemini AI Insights (Auto-generate data analysis using LLM)
 🔮  Real-time accident severity prediction
-📊  Interactive Plotly dashboards & charts
+📊  Interactive Plotly dashboards & 3D Feature Scatter Plots
 🎯  Risk Radar visualization per prediction
 🌲  Random Forest with 200 decision trees
 📈  5-Fold Cross Validation evaluation
-🔥  Feature importance analysis
-🗂️  Full dataset explorer with filters
-🎨  Advanced dark UI with cyberpunk theme
+🔥  Feature importance & Correlation Heatmaps
+🗂️  Full dataset explorer with auto-download functionality
+🎨  Advanced dark UI with cyberpunk theme and glow effects
 ⚡  Instant prediction with probability bars
 🏆  Confusion matrix visualization
 ```
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4520-a447-11eb-908a-139a6edaec5c.gif" width="100%"/>
 
 ---
 
@@ -206,6 +218,7 @@ RandomForestClassifier(
 | Page | Description |
 |:---:|:---|
 | 🏠 **Dashboard** | KPI cards, severity distribution, hourly trends, weather heatmap |
+| 🧪 **Data Cleaning Lab** | Upload CSV, handle missing values, feature scaling, 3D plotting, and **Gemini AI Insights** |
 | 🔮 **Predict Severity** | Input conditions → live severity prediction + probability bars + radar chart |
 | 📊 **Model Analytics** | Feature importance, confusion matrix, model parameters |
 | 🗂️ **Data Explorer** | Browse, filter, visualize the full dataset |

@@ -6,6 +6,78 @@ import plotly.express as px
 import joblib
 import json
 import time
+import seaborn as sns
+import matplotlib.pyplot as plt
+import google.generativeai as genai
+from sklearn.preprocessing import LabelEncoder
+
+def clean_data(df, fill_method="Forward Fill", handle_outliers=False, drop_cols=[]):
+    cleaned = df.copy()
+    if drop_cols:
+        cleaned = cleaned.drop(columns=drop_cols, errors='ignore')
+    original_len = len(cleaned)
+    cleaned = cleaned.drop_duplicates()
+    dups_removed = original_len - len(cleaned)
+    
+    if fill_method == "Forward Fill":
+        cleaned = cleaned.ffill().bfill()
+    elif fill_method == "Mean/Mode":
+        for col in cleaned.columns:
+            if cleaned[col].dtype == 'object':
+                if not cleaned[col].mode().empty:
+                    cleaned[col] = cleaned[col].fillna(cleaned[col].mode()[0])
+            else:
+                cleaned[col] = cleaned[col].fillna(cleaned[col].mean())
+    elif fill_method == "Drop Missing Rows":
+        cleaned = cleaned.dropna()
+                
+    outliers_removed = 0
+    if handle_outliers:
+        num_cols = cleaned.select_dtypes(include=np.number).columns
+        for col in num_cols:
+            Q1 = cleaned[col].quantile(0.25)
+            Q3 = cleaned[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            old_len = len(cleaned)
+            cleaned = cleaned[(cleaned[col] >= lower_bound) & (cleaned[col] <= upper_bound)]
+            outliers_removed += (old_len - len(cleaned))
+            
+    return cleaned, dups_removed, outliers_removed
+
+from sklearn.preprocessing import LabelEncoder, StandardScaler, MinMaxScaler
+def preprocess_data(df, scaler_type="None"):
+    processed = df.copy()
+    le = LabelEncoder()
+    cat_cols = processed.select_dtypes(include=['object', 'category']).columns
+    for col in cat_cols:
+        processed[col] = le.fit_transform(processed[col].astype(str))
+        
+    if scaler_type != "None":
+        num_cols = processed.select_dtypes(include=np.number).columns
+        target_cols = [c for c in processed.columns if 'sev' in c.lower()]
+        cols_to_scale = [c for c in num_cols if c not in target_cols]
+        
+        if scaler_type == "Standard Scaler":
+            scaler = StandardScaler()
+        elif scaler_type == "MinMax Scaler":
+            scaler = MinMaxScaler()
+            
+        if cols_to_scale:
+            processed[cols_to_scale] = scaler.fit_transform(processed[cols_to_scale])
+            
+    return processed
+
+def generate_insights(df_summary, api_key):
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        prompt = f"Analyze the following dataset summary and provide insights on patterns, anomalies, and data cleaning suggestions. Keep it concise, professional, and well-structured.\n\nDataset Summary:\n{df_summary}"
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error generating insights: {str(e)}\nPlease check your API key."
 
 st.set_page_config(
     page_title="TrafficGuard AI",
@@ -34,6 +106,32 @@ html, body, [class*="css"] { font-family: 'Exo 2', sans-serif; }
     padding: 22px 24px;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+.metric-card:hover {
+    transform: translateY(-8px) rotateX(8deg) rotateY(-5deg);
+    box-shadow: -10px 15px 30px rgba(249, 115, 22, 0.25), 10px 15px 30px rgba(239, 68, 68, 0.25);
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px #f97316; }
+    50% { box-shadow: 0 0 20px #ef4444, 0 0 30px #f97316; }
+    100% { box-shadow: 0 0 5px #f97316; }
+}
+.glow-effect {
+    animation: glow 3s infinite alternate;
+    border-radius: 12px;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+.float-effect {
+    animation: float 4s ease-in-out infinite;
 }
 .metric-card::before {
     content: '';
@@ -148,6 +246,7 @@ with st.sidebar:
 
     page = st.radio("Navigation", [
         "🏠  Dashboard",
+        "🧪  Data Cleaning Lab",
         "🔮  Predict Severity",
         "📊  Model Analytics",
         "🗂️  Data Explorer",
@@ -285,6 +384,170 @@ if "Dashboard" in page:
 
 
 # ═══════════════════════════════════════════════════════════════
+#  PAGE 1.5 — DATA CLEANING LAB
+# ═══════════════════════════════════════════════════════════════
+elif "Cleaning Lab" in page:
+    st.markdown("""
+    <div style='padding:10px 0 24px 0;'>
+        <div style='font-family:Rajdhani,sans-serif;font-size:38px;font-weight:800;color:#f1f5f9;'>
+            🧪 Data <span style='color:#f97316;'>Cleaning Lab</span>
+        </div>
+        <div style='font-family:Share Tech Mono,monospace;font-size:11px;color:#475569;letter-spacing:0.1em;'>
+            FULL PIPELINE: RAW DATA → CLEANING → PROCESSING → VISUALIZATION
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    uploaded_file = st.file_uploader("📤 Upload Raw Dataset (CSV)", type="csv")
+    
+    if uploaded_file:
+        raw_df = pd.read_csv(uploaded_file, na_values=["?", "NA", "N/A", "null", "Null", "", " ", "-"])
+        
+        st.markdown("<div class='section-title'>1. Raw Data Preview</div>", unsafe_allow_html=True)
+        st.dataframe(raw_df.head(10), use_container_width=True)
+        
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Rows", raw_df.shape[0])
+        col2.metric("Total Columns", raw_df.shape[1])
+        missing_count = raw_df.isnull().sum().sum()
+        col3.metric("Missing Values", missing_count)
+        
+        st.markdown("#### Missing Values Heatmap")
+        if missing_count == 0:
+            st.info("💡 **No missing values found in the dataset!** The heatmap below is uniformly colored because there is no missing data to highlight.")
+            
+        fig_miss, ax_miss = plt.subplots(figsize=(10, 3))
+        sns.heatmap(raw_df.isnull(), cbar=False, cmap='viridis', ax=ax_miss)
+        fig_miss.patch.set_alpha(0)
+        ax_miss.tick_params(colors='white')
+        st.pyplot(fig_miss)
+        
+        st.markdown("<div class='section-title'>2. Data Cleaning Module & Processing</div>", unsafe_allow_html=True)
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            fill_method = st.selectbox("Handle Missing Values", ["Forward Fill", "Mean/Mode", "Drop Missing Rows"])
+        with c2:
+            scaler_type = st.selectbox("Feature Scaling", ["None", "Standard Scaler", "MinMax Scaler"])
+        with c3:
+            st.markdown("<br>", unsafe_allow_html=True)
+            handle_outliers = st.checkbox("Remove Outliers (IQR)")
+            
+        drop_cols = st.multiselect("Drop Columns (Optional)", raw_df.columns.tolist())
+            
+        if st.button("⚡ Execute Cleaning Pipeline"):
+            with st.spinner("Cleaning and Processing Data..."):
+                cleaned_df, dups_rm, outs_rm = clean_data(raw_df, fill_method, handle_outliers, drop_cols)
+                processed_df = preprocess_data(cleaned_df, scaler_type)
+                st.session_state['processed_df'] = processed_df
+                st.session_state['cleaned_df'] = cleaned_df
+                
+                st.success(f"Pipeline executed! Removed {dups_rm} duplicates and {outs_rm} outliers.")
+        
+        if 'processed_df' in st.session_state:
+            cleaned_df = st.session_state['cleaned_df']
+            processed_df = st.session_state['processed_df']
+            
+            st.markdown("#### BEFORE vs AFTER Cleaning")
+            c1, c2 = st.columns(2)
+            with c1:
+                st.markdown("**Before (Missing Values)**")
+                missing_before = raw_df.isnull().sum()[raw_df.isnull().sum() > 0]
+                if not missing_before.empty:
+                    st.write(missing_before)
+                else:
+                    st.write("None")
+            with c2:
+                st.markdown("**After (Missing Values)**")
+                missing_after = cleaned_df.isnull().sum()[cleaned_df.isnull().sum() > 0]
+                if not missing_after.empty:
+                    st.write(missing_after)
+                else:
+                    st.write("None")
+                    
+            st.markdown("<div class='section-title'>3. Processed Data (Ready for ML)</div>", unsafe_allow_html=True)
+            st.dataframe(processed_df.head(10), use_container_width=True)
+            
+            csv_data = processed_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Download Processed Dataset",
+                data=csv_data,
+                file_name='processed_dataset.csv',
+                mime='text/csv',
+            )
+            
+            st.markdown("<div class='section-title'>4. Data Analysis & Visualization</div>", unsafe_allow_html=True)
+            
+            viz_c1, viz_c2 = st.columns(2)
+            with viz_c1:
+                st.markdown("#### Correlation Heatmap")
+                fig_corr, ax_corr = plt.subplots(figsize=(8, 6))
+                corr = processed_df.select_dtypes(include=np.number).corr()
+                sns.heatmap(corr, cmap='coolwarm', ax=ax_corr, annot=False)
+                fig_corr.patch.set_alpha(0)
+                ax_corr.tick_params(colors='white')
+                st.pyplot(fig_corr)
+                
+            with viz_c2:
+                st.markdown("#### Severity Distribution")
+                target_col = None
+                for col in processed_df.columns:
+                    if 'sev' in col.lower():
+                        target_col = col
+                        break
+                if target_col:
+                    fig_sev = px.histogram(processed_df, x=target_col, color=target_col, color_discrete_sequence=px.colors.qualitative.Set1)
+                    fig_sev.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
+                    st.plotly_chart(fig_sev, use_container_width=True)
+                else:
+                    st.info("No Severity column found for distribution chart.")
+
+            st.markdown("#### 3D Feature Scatter Plot")
+            num_cols = processed_df.select_dtypes(include=np.number).columns.tolist()
+            if len(num_cols) >= 3:
+                sc_c1, sc_c2, sc_c3 = st.columns(3)
+                x_col = sc_c1.selectbox("X-axis (3D)", num_cols, index=0)
+                y_col = sc_c2.selectbox("Y-axis (3D)", num_cols, index=1)
+                z_col = sc_c3.selectbox("Z-axis (3D)", num_cols, index=2)
+                
+                fig_3d = px.scatter_3d(processed_df.sample(min(1000, len(processed_df))), 
+                                      x=x_col, y=y_col, z=z_col, color=target_col if target_col else None,
+                                      color_continuous_scale=px.colors.sequential.Plasma)
+                fig_3d.update_layout(scene=dict(bgcolor='rgba(0,0,0,0)'),
+                                     paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'),
+                                     margin=dict(l=0, r=0, b=0, t=0))
+                st.plotly_chart(fig_3d, use_container_width=True)
+
+            st.markdown("#### Trend Analysis (Time vs Accidents)")
+            time_col = None
+            for col in processed_df.columns:
+                if 'time' in col.lower() or 'hour' in col.lower() or 'date' in col.lower() or 'month' in col.lower():
+                    time_col = col
+                    break
+            if time_col:
+                trend = processed_df[time_col].value_counts().sort_index().reset_index()
+                trend.columns = [time_col, 'Count']
+                fig_trend = px.line(trend, x=time_col, y='Count', markers=True)
+                fig_trend.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
+                st.plotly_chart(fig_trend, use_container_width=True)
+            else:
+                st.info("No time-related column found for trend analysis.")
+            
+            st.markdown("<div class='section-title'>5. AI Insights (Gemini)</div>", unsafe_allow_html=True)
+            gemini_key = st.text_input("🔑 Enter Gemini API Key to Generate Insights", type="password")
+            if st.button("🧠 Generate AI Insights"):
+                if gemini_key:
+                    with st.spinner("Analyzing dataset with Gemini AI..."):
+                        summary = processed_df.describe().to_string()
+                        insights = generate_insights(summary, gemini_key)
+                        st.markdown(f'''
+                        <div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:8px;padding:20px;margin-top:10px;">
+                            <div style="color:#f1f5f9;font-family:Exo 2;white-space:pre-wrap;">{insights}</div>
+                        </div>
+                        ''', unsafe_allow_html=True)
+                else:
+                    st.warning("Please enter your Gemini API key.")
+
+# ═══════════════════════════════════════════════════════════════
 #  PAGE 2 — PREDICT
 # ═══════════════════════════════════════════════════════════════
 elif "Predict" in page:
@@ -304,14 +567,14 @@ elif "Predict" in page:
     with col_form:
         st.markdown("#### 🌦 Weather Conditions")
         c1, c2, c3 = st.columns(3)
-        with c1: temperature   = st.slider("Temperature (°F)", 5, 105, 65)
-        with c2: wind_speed    = st.slider("Wind Speed (mph)", 0, 60, 10)
-        with c3: visibility    = st.slider("Visibility (mi)", 0.1, 10.0, 8.0)
+        with c1: temperature   = st.slider("Temperature (°C)", 15, 50, 28)
+        with c2: wind_speed    = st.slider("Wind Speed (km/h)", 0, 100, 15)
+        with c3: visibility    = st.slider("Visibility (km)", 0.1, 20.0, 10.0)
 
         c1, c2, c3 = st.columns(3)
-        with c1: precipitation = st.slider("Precipitation (in)", 0.0, 3.0, 0.0)
-        with c2: humidity      = st.slider("Humidity (%)", 10, 100, 60)
-        with c3: pressure      = st.slider("Pressure (in)", 27.0, 32.0, 29.9)
+        with c1: precipitation = st.slider("Precipitation (mm)", 0.0, 150.0, 0.0)
+        with c2: humidity      = st.slider("Humidity (%)", 10, 100, 65)
+        with c3: pressure      = st.slider("Pressure (hPa)", 900.0, 1100.0, 1010.0)
 
         weather_cond = st.selectbox("Weather Condition", sorted(meta['weather_classes']))
 
@@ -319,9 +582,9 @@ elif "Predict" in page:
         c1, c2 = st.columns(2)
         with c1:
             road_type   = st.selectbox("Road Type", sorted(meta['road_classes']))
-            speed_limit = st.selectbox("Speed Limit (mph)", [25,35,45,55,65,70,75])
+            speed_limit = st.selectbox("Speed Limit (km/h)", [30,40,50,60,80,100,120])
         with c2:
-            state       = st.selectbox("State", sorted(meta['state_classes']))
+            state       = st.selectbox("Location (Karnataka)", sorted(meta['state_classes']))
             hour        = st.slider("Hour of Day (0=midnight)", 0, 23, 8)
 
         c1, c2, c3 = st.columns(3)
@@ -398,11 +661,11 @@ elif "Predict" in page:
 
             st.markdown("<div class='section-title'>Risk Radar</div>", unsafe_allow_html=True)
             risk_vals = [
-                min(wind_speed/60, 1),
-                1 - min(visibility/10, 1),
-                min(precipitation/3, 1),
+                min(wind_speed/100, 1),
+                1 - min(visibility/20, 1),
+                min(precipitation/100, 1),
                 float(bad_w),
-                speed_limit/75,
+                speed_limit/120,
                 float(is_night)
             ]
             cats = ['Wind','Low Visibility','Precipitation','Bad Weather','Speed','Night']
@@ -562,7 +825,7 @@ elif "Explorer" in page:
             st.markdown("<div class='section-title'>Temperature vs Severity</div>", unsafe_allow_html=True)
             fig_b = go.Figure()
             for sev, clr in zip([1,2,3,4],['#22c55e','#f59e0b','#f97316','#ef4444']):
-                sub = df[df['Severity']==sev]['Temperature_F']
+                sub = df[df['Severity']==sev]['Temperature_C']
                 fig_b.add_trace(go.Box(y=sub, name=f'Sev {sev}',
                                        marker_color=clr, line_color=clr))
             fig_b.update_layout(

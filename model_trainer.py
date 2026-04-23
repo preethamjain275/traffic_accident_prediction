@@ -27,8 +27,8 @@ df['Is_Weekend']   = df['Day_of_Week'].isin(['Saturday','Sunday']).astype(int)
 df['Bad_Weather']  = df['Weather_Condition'].isin(['Heavy Rain','Snow','Fog','Thunderstorm','Hail']).astype(int)
 
 FEATURES = [
-    'Temperature_F','Wind_Speed_mph','Visibility_mi','Precipitation_in',
-    'Humidity_pct','Pressure_in','Speed_Limit','Weather_Encoded','Road_Encoded',
+    'Temperature_C','Wind_Speed_kmh','Visibility_km','Precipitation_mm',
+    'Humidity_pct','Pressure_hPa','Speed_Limit','Weather_Encoded','Road_Encoded',
     'Hour','Day_Encoded','Month','State_Encoded',
     'Junction','Traffic_Signal','Crossing','Stop','Amenity',
     'Is_Rush_Hour','Is_Night','Is_Weekend','Bad_Weather'

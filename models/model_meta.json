@@ -1,14 +1,14 @@
 {
-  "accuracy": 0.6235,
-  "cv_mean": 0.6181,
-  "cv_std": 0.0038,
+  "accuracy": 0.628,
+  "cv_mean": 0.6274,
+  "cv_std": 0.0105,
   "features": [
-    "Temperature_F",
-    "Wind_Speed_mph",
-    "Visibility_mi",
-    "Precipitation_in",
+    "Temperature_C",
+    "Wind_Speed_kmh",
+    "Visibility_km",
+    "Precipitation_mm",
     "Humidity_pct",
-    "Pressure_in",
+    "Pressure_hPa",
     "Speed_Limit",
     "Weather_Encoded",
     "Road_Encoded",
@@ -30,19 +30,16 @@
     "Clear",
     "Cloudy",
     "Fog",
-    "Hail",
     "Heavy Rain",
     "Rain",
-    "Snow",
-    "Thunderstorm",
-    "Windy"
+    "Thunderstorm"
   ],
   "road_classes": [
     "City Street",
-    "Highway",
-    "Interstate",
+    "National Highway",
+    "Ring Road",
     "Rural Road",
-    "State Road"
+    "State Highway"
   ],
   "day_classes": [
     "Friday",
@@ -54,64 +51,59 @@
     "Wednesday"
   ],
   "state_classes": [
-    "CA",
-    "FL",
-    "GA",
-    "IL",
-    "MI",
-    "NC",
-    "NY",
-    "OH",
-    "PA",
-    "TX"
+    "Belagavi, Karnataka",
+    "Bengaluru, Karnataka",
+    "Hubballi, Karnataka",
+    "Mangaluru, Karnataka",
+    "Mysuru, Karnataka"
   ],
   "feature_importances": {
-    "Speed_Limit": 0.14319,
-    "Bad_Weather": 0.13194,
-    "Visibility_mi": 0.11039,
-    "Wind_Speed_mph": 0.07769,
-    "Weather_Encoded": 0.07344,
-    "Temperature_F": 0.06991,
-    "Humidity_pct": 0.05826,
-    "Hour": 0.05823,
-    "Pressure_in": 0.05642,
-    "Month": 0.03797,
-    "State_Encoded": 0.03563,
-    "Day_Encoded": 0.0297,
-    "Road_Encoded": 0.02433,
-    "Precipitation_in": 0.02154,
-    "Is_Night": 0.01191,
-    "Traffic_Signal": 0.01043,
-    "Junction": 0.00904,
-    "Stop": 0.00869,
-    "Crossing": 0.00837,
-    "Is_Rush_Hour": 0.00795,
-    "Amenity": 0.00794,
-    "Is_Weekend": 0.00703
+    "Speed_Limit": 0.13442,
+    "Wind_Speed_kmh": 0.12896,
+    "Visibility_km": 0.10452,
+    "Bad_Weather": 0.101,
+    "Temperature_C": 0.06693,
+    "Hour": 0.06497,
+    "Pressure_hPa": 0.06035,
+    "Humidity_pct": 0.05876,
+    "Weather_Encoded": 0.05732,
+    "Month": 0.03991,
+    "Day_Encoded": 0.02951,
+    "State_Encoded": 0.02646,
+    "Precipitation_mm": 0.02543,
+    "Road_Encoded": 0.02356,
+    "Is_Night": 0.01305,
+    "Traffic_Signal": 0.01091,
+    "Junction": 0.01038,
+    "Amenity": 0.01017,
+    "Crossing": 0.01006,
+    "Is_Rush_Hour": 0.00819,
+    "Stop": 0.00792,
+    "Is_Weekend": 0.00724
   },
   "confusion_matrix": [
     [
-      632,
-      140,
-      27,
+      647,
+      130,
+      22,
       1
     ],
     [
-      157,
-      236,
-      99,
-      8
+      184,
+      197,
+      105,
+      14
     ],
     [
-      30,
-      120,
-      164,
-      86
+      36,
+      105,
+      197,
+      62
     ],
     [
-      2,
-      17,
-      66,
+      1,
+      14,
+      70,
       215
     ]
   ],
