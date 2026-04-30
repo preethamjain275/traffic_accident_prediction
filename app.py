@@ -91,7 +91,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;800&display=swap');
 
-html, body, [class*="css"] { font-family: 'Exo 2', sans-serif; }
+html, body, .stApp, div, span, p, label { font-family: 'Exo 2', sans-serif !important; }
 
 .stApp { background: #030712; color: #e2e8f0; }
 
@@ -210,7 +210,6 @@ h1,h2,h3 { font-family:'Rajdhani',sans-serif !important; }
 .stTabs [aria-selected="true"] { color:#f97316 !important; }
 </style>
 """, unsafe_allow_html=True)
-
 
 # ── Load model & data ──────────────────────────────────────────────────────
 @st.cache_resource
